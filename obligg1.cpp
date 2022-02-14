@@ -70,16 +70,11 @@ int main()
 
         switch (svar)
         {
-        case 'N':
-            nyRute();       break;
-        case 'A':
-            skrivRuter();   break;
-        case 'B':
-            skrivStopp();   break;
-        case 'S':
-            slettRute();    break;
-        default:
-            skrivMeny();
+        case 'N': nyRute();       break;
+        case 'A': skrivRuter();   break;
+        case 'B': skrivStopp();   break;
+        case 'S': slettRute();    break;
+        default : skrivMeny();
         }
         svar = lesChar("Skriv inn en kommando");
     }
@@ -160,7 +155,10 @@ void nyRute()
     nyRute = new Rute; // Allokerer plass for pekeren
                        // Hvis totMin < 0, slett allokert plass.
     if (ruteLesData(*nyRute) == false)
+    {
         delete nyRute;
+        cout << "Ingen ruter ble laget" << endl;
+    }
     else
     {
         gRuter.push_back(nyRute); // Legger ny rute bakerst
