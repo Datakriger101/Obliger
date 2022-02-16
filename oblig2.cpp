@@ -55,7 +55,7 @@ class Aktivitet  {
 class Tidsbegrenset : public Aktivitet  {
   private:
     int  startTime, startMin, sluttTime, sluttMin;
-    bool klokkeslettOK(const int time, const int minutt) const;
+    bool klokkeslettOK(const int time, const int min) const;
   public:
     Tidsbegrenset()  { sluttMin = sluttTime = startTime = startMin = 0; };
     void lesData();
@@ -142,17 +142,36 @@ int main ()  {
  *  Leser inn ALLE klassens data.
  */
 void Aktivitet::lesData() {
+    char temp;
+    cout << "Hva slags aktivitet: "; getline(cin, navn);
+    cout << "Aktivitetstype Jobb(J), Fritid(F), Skole(S) og Ikke angitt(I): ";
+    do{
+        cin >> temp;    toupper(temp);
+    }while(temp != 'J' && temp != 'F' && temp!= 'S' && temp != 'I');
 
-//  Lag innmaten
+    switch(temp){
+        case 'J' : kategori = Jobb ; break;
+        case 'F' : kategori = Fritid; break;
+        case 'S' : kategori = Skole; break;
+        case 'I' : kategori = ikkeAngitt; break;
+    }
 }
 
 
 /**
- *  Skriver ut ALLE klassens data.
+ *  Skriver ut ALLE klassens data
  */
 void Aktivitet::skrivData() const {
 
-//  Lag innmaten
+    cout << "\nAktivitet navn: " << navn;
+
+    cout << "\nAktivitetstype: ";
+    switch(kategori){
+        case Jobb : cout << "Jobb aktivitet"; break;
+        case Fritid : cout << "Fritids aktivitet"; break;
+        case Skole : cout << "Skole aktivitet"; break;
+        case ikkeAngitt : cout << "Ingen spesiell aktivitet"; break;
+    }
 }
 
 
@@ -164,9 +183,17 @@ void Aktivitet::skrivData() const {
  */
 void Tidsbegrenset::lesData() {
 
-//  Lag innmaten
-}
+    Aktivitet::lesData();
 
+    do{
+        cin >> startTime;    cin >> startMin;
+    }while(klokkeslettOK(startTime, startMin));
+    
+    do{
+
+        cin >> sluttTime;   cin >> sluttMin;
+    }while(klokkeslettOK(sluttTime, sluttMin));
+}
 
 /**
  *  Privat funksjon som finner ut om input er et lovlig klokkeslett.
@@ -175,9 +202,11 @@ void Tidsbegrenset::lesData() {
  *  @param   minutt  -  Minuttet som skal evalueres til mellom 0 og 59
  *  @return  Om parametrene er et lovlig klokkeslett eller ei
  */
-bool Tidsbegrenset::klokkeslettOK(const int time, const int minutt) const {
+bool Tidsbegrenset::klokkeslettOK(const int time, const int min) const {
 
-//  Lag innmaten
+    if((time > 0 && time < 23) && (min > 0 && min < 23))
+        return false;
+
 }
 
 
