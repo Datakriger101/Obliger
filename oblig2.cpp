@@ -26,6 +26,7 @@
 #include <string>                  //  string
 #include <vector>                  //  vector
 #include "LesData2.h"
+#include <iomanip>
 using namespace std;
 
 
@@ -100,7 +101,7 @@ class Dag  {
 bool dagOK(const int dag, const int maaned, const int aar);
 Dag* finnDag(const int dag, const int maaned, const int aar);
 void frigiAllokertMemory();
-void nyAktivitet();
+void nyAktivitet(); 
 void skrivDager(const bool inkludertAktiviteter);
 void skrivEnDag();
 void skrivMeny();
@@ -218,8 +219,12 @@ bool Tidsbegrenset::klokkeslettOK(const int time, const int min) const {
 void Tidsbegrenset::skrivData() const {         //  Skriver mor-klassens data.
 
     Aktivitet::skrivData();
-    cout << "Aktitet start" << startTime << ":" << startMin << endl;
-    cout << "Aktivitet slutt" << sluttTime << ":" << sluttMin << endl;
+
+    cout << setfill('0');
+    cout << "Aktitet start" << setw(2) << startTime << ":" <<
+    setw(2)<< startMin << endl;
+    cout << "Aktivitet slutt" << setw(2) << sluttTime << ":" <<
+    setw(2) << sluttMin << endl;
 }
 
 
@@ -252,11 +257,16 @@ void Heldags::skrivData() const {
  */
 Dag :: ~ Dag() {
 
-    while(!gDagene.empty()){
-        delete gDagene[gDagene.size()-1];
-        gDagene.pop_back();
+    while(!tidsbegrensedeAktiviteter.empty()){
+        delete tidsbegrensedeAktiviteter[tidsbegrensedeAktiviteter.size()-1];
+        tidsbegrensedeAktiviteter.pop_back();
     }
-    cout << "\nAlt ble slettet";
+
+    while(!heldagsAktiviteter.empty()){
+        delete heldagsAktiviteter[heldagsAktiviteter.size()-1];
+        tidsbegrensedeAktiviteter.pop_back();
+    }
+    cout << "\nSletter vectorer i dag klassen";
 }
 
 
@@ -269,10 +279,17 @@ Dag :: ~ Dag() {
  *  @return  Om selv er en gitt dato (ut fra parametrene) eller ei
  */
 bool Dag::harDato(const int dag, const int maaned, const int aar) const {
-
     
+    for(int i = 0; i < gDagene.size(); i++){
+        if(gDagene[i]->dagNr == dag){
+            if(gDagene[i]->maanedNr == maaned){
+                if(gDagene[i]->aarNr == aar){
+                    return false;
+                }else return true;
+            }else return true;
+        }else return true;
+    }
 }
-
 
 /**
  *  Oppretter, leser og legger inn en ny aktivitet pÃ¥ dagen.
@@ -281,8 +298,20 @@ bool Dag::harDato(const int dag, const int maaned, const int aar) const {
  *  @see   Heldags::lesData()
  */
 void Dag::nyAktivitet()  {
+    char temp;  
+    temp = lesChar("Hva slags aktivitet (Heldags - H) (tidsbegrenset - T)");
 
-//  Lag innmaten
+    if (temp == 'H'){
+        Heldags* aktivitetH; aktivitetH = new Heldags;
+        aktivitetH->lesData();
+        heldagsAktiviteter.push_back(aktivitetH);
+    }else{
+        Tidsbegrenset* aktivitetT; aktivitetT = new Tidsbegrenset;
+        aktivitetT->lesData();
+        tidsbegrensedeAktiviteter.push_back(aktivitetT);
+    }
+    
+
 }
 
 
