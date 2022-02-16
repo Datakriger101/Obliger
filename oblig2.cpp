@@ -186,12 +186,13 @@ void Tidsbegrenset::lesData() {
     Aktivitet::lesData();
 
     do{
-        cin >> startTime;    cin >> startMin;
+        cout << "\nTime-start"; cin >> startTime;
+        cout << "\nMinutt-start"; cin >> startMin;
     }while(klokkeslettOK(startTime, startMin));
     
     do{
-
-        cin >> sluttTime;   cin >> sluttMin;
+        cout << "\nTime-start"; cin >> sluttTime;
+        cout << "\nMinutt-start"; cin >> sluttMin;
     }while(klokkeslettOK(sluttTime, sluttMin));
 }
 
@@ -205,8 +206,7 @@ void Tidsbegrenset::lesData() {
 bool Tidsbegrenset::klokkeslettOK(const int time, const int min) const {
 
     if((time > 0 && time < 23) && (min > 0 && min < 23))
-        return false;
-
+        return false; else return true;
 }
 
 
@@ -217,7 +217,9 @@ bool Tidsbegrenset::klokkeslettOK(const int time, const int min) const {
  */
 void Tidsbegrenset::skrivData() const {         //  Skriver mor-klassens data.
 
-//  Lag innmaten
+    Aktivitet::skrivData();
+    cout << "Aktitet start" << startTime << ":" << startMin << endl;
+    cout << "Aktivitet slutt" << sluttTime << ":" << sluttMin << endl;
 }
 
 
@@ -228,7 +230,8 @@ void Tidsbegrenset::skrivData() const {         //  Skriver mor-klassens data.
  */
 void Heldags::lesData() {
 
-//  Lag innmaten
+    Aktivitet::lesData();
+    cout << "Beskrivelse aktivitet: "; getline(cin, beskrivelse);
 }
 
 
@@ -239,7 +242,8 @@ void Heldags::lesData() {
  */
 void Heldags::skrivData() const {
 
-//  Lag innmaten
+    Aktivitet::skrivData();
+    cout << "\nAktivitet beskrivelse: " << beskrivelse;
 }
 
 
@@ -248,7 +252,11 @@ void Heldags::skrivData() const {
  */
 Dag :: ~ Dag() {
 
-//  Lag innmaten
+    while(!gDagene.empty()){
+        delete gDagene[gDagene.size()-1];
+        gDagene.pop_back();
+    }
+    cout << "\nAlt ble slettet";
 }
 
 
@@ -262,7 +270,7 @@ Dag :: ~ Dag() {
  */
 bool Dag::harDato(const int dag, const int maaned, const int aar) const {
 
-//  Lag innmaten
+    
 }
 
 
