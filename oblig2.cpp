@@ -206,7 +206,7 @@ void Tidsbegrenset::lesData() {
  */
 bool Tidsbegrenset::klokkeslettOK(const int time, const int min) const {
 
-    if((time > 0 && time < 23) && (min > 0 && min < 23))
+    if((time > 0 && time < 23) && (min > 0 && min < 59))
         return false; else return true;
 }
 
@@ -221,9 +221,9 @@ void Tidsbegrenset::skrivData() const {         //  Skriver mor-klassens data.
     Aktivitet::skrivData();
 
     cout << setfill('0');
-    cout << "Aktitet start" << setw(2) << startTime << ":" <<
+    cout << "Aktitet start" << setw(2) << startTime << " - " <<
     setw(2)<< startMin << endl;
-    cout << "Aktivitet slutt" << setw(2) << sluttTime << ":" <<
+    cout << "Aktivitet slutt" << setw(2) << sluttTime << " - " <<
     setw(2) << sluttMin << endl;
 }
 
@@ -236,7 +236,7 @@ void Tidsbegrenset::skrivData() const {         //  Skriver mor-klassens data.
 void Heldags::lesData() {
 
     Aktivitet::lesData();
-    cout << "Beskrivelse aktivitet: "; getline(cin, beskrivelse);
+    cout << "Beskrivelse aktivitet heldags: "; getline(cin, beskrivelse);
 }
 
 
@@ -298,13 +298,15 @@ bool Dag::harDato(const int dag, const int maaned, const int aar) const {
  *  @see   Heldags::lesData()
  */
 void Dag::nyAktivitet()  {
-    char temp;  
+    char temp;
+
     temp = lesChar("Hva slags aktivitet (Heldags - H) (tidsbegrenset - T)");
 
     if (temp == 'H'){
         Heldags* aktivitetH; aktivitetH = new Heldags;
         aktivitetH->lesData();
         heldagsAktiviteter.push_back(aktivitetH);
+        
     }else{
         Tidsbegrenset* aktivitetT; aktivitetT = new Tidsbegrenset;
         aktivitetT->lesData();
@@ -333,8 +335,8 @@ void Dag::skrivAktiviteter() const {
  *  Skriver KUN ut egen -dato.
  */
 void Dag::skrivDato() const {
+    cout << "Dagens dato: " << dagNr << "." << maanedNr << "." << aarNr;
 
-    
 }
 
 
@@ -352,7 +354,14 @@ void Dag::skrivDato() const {
  */
 bool dagOK(const int dag, const int maaned, const int aar)  {
 
-//  Lag innmaten
+    if(dag > 0 && dag < 23 ){
+        if(maaned > 0 << maaned < 12){
+            if(aar > 1990 && aar < 2030){
+                cout << "Dato er gyldig" << endl;
+                return true;
+            }else return false;
+        }else return false;
+    }else return false;
 }
 
 
@@ -367,7 +376,14 @@ bool dagOK(const int dag, const int maaned, const int aar)  {
  */
 Dag* finnDag(const int dag, const int maaned, const int aar)  {
 
-//  Lag innmaten
+    for(int i = 0; i < gDagene.size(); i++){
+        if(dagOK(dag, maaned, aar)){
+            
+        }else{
+
+        }
+    }
+    cout << "Ingen var like" << endl;
 }
 
 
@@ -390,7 +406,7 @@ void frigiAllokertMemory()  {
  */
 void nyAktivitet()  {
 
-//  Lag innmaten
+    
 }
 
 
@@ -402,8 +418,12 @@ void nyAktivitet()  {
  *  @see     Dag::skrivAktiviteter()
  */
 void skrivDager(const bool inkludertAktiviteter)  {
-
-//  Lag innmaten
+    if(!gDagene.empty()){
+        for(int i = 0; i < gDagene.size(); i++){
+            gDagene[i]->skrivAktiviteter();
+        }
+    }else
+        cout << "Ingen lagrede dager!" << endl;
 }
 
 
