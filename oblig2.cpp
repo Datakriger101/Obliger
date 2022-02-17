@@ -310,10 +310,7 @@ void Dag::nyAktivitet()  {
         aktivitetT->lesData();
         tidsbegrensedeAktiviteter.push_back(aktivitetT);
     }
-    
-
 }
-
 
 /**
  *  Skriver ut ALLE aktiviteter pÃ¥ egen dato (og intet annet).
@@ -322,17 +319,22 @@ void Dag::nyAktivitet()  {
  *  @see   Tidsbegrenset::skrivData()
  */
 void Dag::skrivAktiviteter() const {
+    cout << "Heldags aktiviteter\n------------------\n\n";
+    for(int i = 0; i < heldagsAktiviteter.size(); i++)
+        cout << "Aktivitet nr. " << i+1 << heldagsAktiviteter[i] << endl;
 
-//  Lag innmaten
+    cout << "Tidsbegrensede aktivitet\n--------------------\n\n";
+    for(int i = 0; i < tidsbegrensedeAktiviteter.size(); i++)
+        cout<<"\nAktivitet nr. " << i+1 << tidsbegrensedeAktiviteter[i]<<"\n";
 }
 
 
 /**
- *  Skriver KUN ut egen dato.
+ *  Skriver KUN ut egen -dato.
  */
 void Dag::skrivDato() const {
 
-//  Lag innmaten
+    
 }
 
 
