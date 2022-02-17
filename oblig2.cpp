@@ -87,7 +87,7 @@ class Dag  {
     vector <Heldags*> heldagsAktiviteter;
 
   public:
-//    Dag()  {  };
+//  Dag()   { dagNr = 0; maanedNr = 0; aarNr = 0; };
     Dag(const int dag, const int maaned, const int aar) {
                            dagNr = dag;  maanedNr = maaned;  aarNr = aar; };
     ~ Dag();
@@ -145,9 +145,8 @@ int main ()  {
 void Aktivitet::lesData() {
     char temp;
     cout << "Hva slags aktivitet: "; getline(cin, navn);
-    cout << "Aktivitetstype Jobb(J), Fritid(F), Skole(S) og Ikke angitt(I): ";
     do{
-        cin >> temp;    toupper(temp);
+        temp=lesChar("Aktivitetstype Jobb(J), Fritid(F), Skole(S) og Ikke angitt(I)");
     }while(temp != 'J' && temp != 'F' && temp!= 'S' && temp != 'I');
 
     switch(temp){
@@ -300,7 +299,7 @@ bool Dag::harDato(const int dag, const int maaned, const int aar) const {
 void Dag::nyAktivitet()  {
     char temp;
 
-    temp = lesChar("Hva slags aktivitet (Heldags - H) (tidsbegrenset - T)");
+    temp = lesChar("Er aktiviteten (Heldags - H) (tidsbegrenset - T)");
 
     if (temp == 'H'){
         Heldags* aktivitetH; aktivitetH = new Heldags;
@@ -330,7 +329,6 @@ void Dag::skrivAktiviteter() const {
         cout<<"\nAktivitet nr. " << i+1 << tidsbegrensedeAktiviteter[i]<<"\n";
 }
 
-
 /**
  *  Skriver KUN ut egen -dato.
  */
@@ -354,9 +352,9 @@ void Dag::skrivDato() const {
  */
 bool dagOK(const int dag, const int maaned, const int aar)  {
 
-    if(dag > 0 && dag < 23 ){
-        if(maaned > 0 << maaned < 12){
-            if(aar > 1990 && aar < 2030){
+    if(dag >= 1 && dag <= 31 ){
+        if(maaned >= 1 << maaned <= 12){
+            if(aar >= 1990 && aar <= 2030){
                 cout << "Dato er gyldig" << endl;
                 return true;
             }else return false;
@@ -377,11 +375,9 @@ bool dagOK(const int dag, const int maaned, const int aar)  {
 Dag* finnDag(const int dag, const int maaned, const int aar)  {
 
     for(int i = 0; i < gDagene.size(); i++){
-        if(dagOK(dag, maaned, aar)){
-            
-        }else{
-
-        }
+        if(gDagene[i]->harDato(dag, maaned, aar))
+            return gDagene[i];
+        else return nullptr;
     }
     cout << "Ingen var like" << endl;
 }
@@ -405,8 +401,26 @@ void frigiAllokertMemory()  {
  *  @see   Dag::nyAktivitet()
  */
 void nyAktivitet()  {
+    int dag, mnd, aar;
 
-    
+    skrivDager(!gDagene.empty());
+
+    do{
+        do{
+            cout << "Skriv inn en ny dato:" << endl;
+            cout << "Hvilket år: "; cin >> aar;
+            cout << "Hvilken mnd: "; cin >> mnd;
+            cout << "Hvilken dag: "; cin >> dag;
+            cout << "\n\n";
+        }while(!dagOK(dag, mnd, aar));
+
+    }while(!finnDag(dag, mnd, aar));
+
+    Dag* nyDag;
+    nyDag = new Dag(dag, mnd, aar);
+    gDagene.push_back(nyDag);
+
+    nyDag->nyAktivitet();       //Vet ikke om den oppdaterer den pakeren som er lagt bakerst
 }
 
 
@@ -418,14 +432,12 @@ void nyAktivitet()  {
  *  @see     Dag::skrivAktiviteter()
  */
 void skrivDager(const bool inkludertAktiviteter)  {
-    if(!gDagene.empty()){
-        for(int i = 0; i < gDagene.size(); i++){
+    if(inkludertAktiviteter){
+        for(int i = 0; i < gDagene.size(); i++)
             gDagene[i]->skrivAktiviteter();
-        }
     }else
         cout << "Ingen lagrede dager!" << endl;
 }
-
 
 /**
  *  Skriver ut ALLE data om EN gitt dag.
@@ -436,8 +448,18 @@ void skrivDager(const bool inkludertAktiviteter)  {
  *  @see   Dag::skrivAktiviteter()
  */
 void skrivEnDag()  {
+    int dag, mnd, aar;
+    skrivDager(!gDagene.empty());
 
-//  Lag innmaten
+    do{
+        cout << "Hvilken dato vil du skrive ut" << endl;
+            cout << "Hvilket år: "; cin >> aar;
+            cout << "Hvilken mnd: "; cin >> mnd;
+            cout << "Hvilken dag: "; cin >> dag;
+    }while(!dagOK(dag, mnd, aar));
+
+    finnDag(dag, mnd, aar)->skrivDato();
+
 }
 
 
