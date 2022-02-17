@@ -325,7 +325,7 @@ void Dag::skrivAktiviteter() const {
     if(heldagsAktiviteter.size() > 0){
         cout << "\n\nHeldags aktiviteter\n------------------\n\n";
 
-
+        cout << "the size: " << heldagsAktiviteter.size() << endl;
         for(int i = 0; i < heldagsAktiviteter.size(); i++){
             cout << "Aktivitet nr. " << i+1 << endl;
             heldagsAktiviteter[i]->skrivData();
@@ -333,7 +333,8 @@ void Dag::skrivAktiviteter() const {
     }
 
     if(!tidsbegrensedeAktiviteter.empty()){
-        cout << "\n\nTidsbegrensede aktivitet\n--------------------\n\n";
+        cout << "Tidsbegrensede aktivitet\n--------------------\n\n";
+        cout << "the size: " << tidsbegrensedeAktiviteter.size() << endl;
         for(int i = 0; i < tidsbegrensedeAktiviteter.size(); i++){
             cout<<"\nAktivitet nr. " << i+1 << endl;
             tidsbegrensedeAktiviteter[i]->skrivData();
@@ -431,8 +432,8 @@ void nyAktivitet()  {
 
     Dag* nyDag;
     nyDag = new Dag(dag, mnd, aar);
-    nyDag->nyAktivitet();
     gDagene.push_back(nyDag);
+    nyDag->nyAktivitet();
 
 }
 
