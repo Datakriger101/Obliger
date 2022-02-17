@@ -144,10 +144,11 @@ int main ()  {
  */
 void Aktivitet::lesData() {
     char temp;
-    cout << "Hva slags aktivitet: "; getline(cin, navn);
+
     do{
         temp=lesChar("Aktivitetstype Jobb(J), Fritid(F), Skole(S) og Ikke angitt(I)");
     }while(temp != 'J' && temp != 'F' && temp!= 'S' && temp != 'I');
+    cout << "Hva slags aktivitet: "; getline(cin, navn);
 
     switch(temp){
         case 'J' : kategori = Jobb ; break;
@@ -320,13 +321,22 @@ void Dag::nyAktivitet()  {
  *  @see   Tidsbegrenset::skrivData()
  */
 void Dag::skrivAktiviteter() const {
-    cout << "Heldags aktiviteter\n------------------\n\n";
-    for(int i = 0; i < heldagsAktiviteter.size(); i++)
-        cout << "Aktivitet nr. " << i+1 << heldagsAktiviteter[i] << endl;
 
-    cout << "Tidsbegrensede aktivitet\n--------------------\n\n";
-    for(int i = 0; i < tidsbegrensedeAktiviteter.size(); i++)
-        cout<<"\nAktivitet nr. " << i+1 << tidsbegrensedeAktiviteter[i]<<"\n";
+    if(!heldagsAktiviteter.empty()){
+        cout << "Heldags aktiviteter\n------------------\n\n";
+        for(int i = 0; i < heldagsAktiviteter.size(); i++){
+            cout << "Aktivitet nr. " << i+1 << endl;
+            heldagsAktiviteter[i]->skrivData();
+        }
+    }else{}
+
+    if(!tidsbegrensedeAktiviteter.empty()){
+        cout << "\n\nTidsbegrensede aktivitet\n--------------------\n\n";
+        for(int i = 0; i < tidsbegrensedeAktiviteter.size(); i++){
+            cout<<"\nAktivitet nr. " << i+1 << endl;
+            tidsbegrensedeAktiviteter[i]->skrivData();
+        }
+    }else{}
 }
 
 /**
@@ -418,9 +428,9 @@ void nyAktivitet()  {
 
     Dag* nyDag;
     nyDag = new Dag(dag, mnd, aar);
+    nyDag->nyAktivitet();
     gDagene.push_back(nyDag);
 
-    nyDag->nyAktivitet();       //Vet ikke om den oppdaterer den pakeren som er lagt bakerst
 }
 
 
@@ -458,7 +468,8 @@ void skrivEnDag()  {
             cout << "Hvilken dag: "; cin >> dag;
     }while(!dagOK(dag, mnd, aar));
 
-    finnDag(dag, mnd, aar)->skrivDato();
+    //if(finnDag(dag, mnd, aar))
+        
 
 }
 
