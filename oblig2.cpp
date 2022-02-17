@@ -187,13 +187,13 @@ void Tidsbegrenset::lesData() {
     Aktivitet::lesData();
 
     do{
-        cout << "\nTime-start"; cin >> startTime;
-        cout << "\nMinutt-start"; cin >> startMin;
+        cout << "\nTime-start: "; cin >> startTime;
+        cout << "\nMinutt-start: "; cin >> startMin;
     }while(klokkeslettOK(startTime, startMin));
     
     do{
-        cout << "\nTime-start"; cin >> sluttTime;
-        cout << "\nMinutt-start"; cin >> sluttMin;
+        cout << "\nTime-Slutt: "; cin >> sluttTime;
+        cout << "\nMinutt-Slutt: "; cin >> sluttMin;
     }while(klokkeslettOK(sluttTime, sluttMin));
 }
 
@@ -221,9 +221,9 @@ void Tidsbegrenset::skrivData() const {         //  Skriver mor-klassens data.
     Aktivitet::skrivData();
 
     cout << setfill('0');
-    cout << "Aktitet start" << setw(2) << startTime << " - " <<
-    setw(2)<< startMin << endl;
-    cout << "Aktivitet slutt" << setw(2) << sluttTime << " - " <<
+    cout << "\nAktitet start: " << setw(2) << startTime << " - " <<
+    setw(2)<< startMin;
+    cout << "\nAktivitet slutt" << setw(2) << sluttTime << " - " <<
     setw(2) << sluttMin << endl;
 }
 
@@ -322,13 +322,15 @@ void Dag::nyAktivitet()  {
  */
 void Dag::skrivAktiviteter() const {
 
-    if(!heldagsAktiviteter.empty()){
-        cout << "Heldags aktiviteter\n------------------\n\n";
+    if(heldagsAktiviteter.size() > 0){
+        cout << "\n\nHeldags aktiviteter\n------------------\n\n";
+
+
         for(int i = 0; i < heldagsAktiviteter.size(); i++){
             cout << "Aktivitet nr. " << i+1 << endl;
             heldagsAktiviteter[i]->skrivData();
         }
-    }else{}
+    }
 
     if(!tidsbegrensedeAktiviteter.empty()){
         cout << "\n\nTidsbegrensede aktivitet\n--------------------\n\n";
@@ -336,14 +338,15 @@ void Dag::skrivAktiviteter() const {
             cout<<"\nAktivitet nr. " << i+1 << endl;
             tidsbegrensedeAktiviteter[i]->skrivData();
         }
-    }else{}
+    }
 }
 
 /**
  *  Skriver KUN ut egen -dato.
  */
 void Dag::skrivDato() const {
-    cout << "Dagens dato: " << dagNr << "." << maanedNr << "." << aarNr;
+    cout << "\n\nDagens dato: " << dagNr << "." << maanedNr << "." << aarNr
+    << endl;
 
 }
 
@@ -413,7 +416,7 @@ void frigiAllokertMemory()  {
 void nyAktivitet()  {
     int dag, mnd, aar;
 
-    skrivDager(!gDagene.empty());
+    //skrivDager(!gDagene.empty()); Vet ikke hvorfor
 
     do{
         do{
@@ -442,9 +445,11 @@ void nyAktivitet()  {
  *  @see     Dag::skrivAktiviteter()
  */
 void skrivDager(const bool inkludertAktiviteter)  {
-    if(inkludertAktiviteter){
-        for(int i = 0; i < gDagene.size(); i++)
-            gDagene[i]->skrivAktiviteter();
+    if(!gDagene.empty()){
+        for(int i = 0; i < gDagene.size(); i++){
+            gDagene[i]->skrivDato();
+            if(inkludertAktiviteter) gDagene[i]->skrivAktiviteter();
+        }
     }else
         cout << "Ingen lagrede dager!" << endl;
 }
@@ -459,7 +464,7 @@ void skrivDager(const bool inkludertAktiviteter)  {
  */
 void skrivEnDag()  {
     int dag, mnd, aar;
-    skrivDager(!gDagene.empty());
+    //skrivDager(!gDagene.empty());
 
     do{
         cout << "Hvilken dato vil du skrive ut" << endl;
