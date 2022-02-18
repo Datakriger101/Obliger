@@ -120,6 +120,9 @@ int main ()  {
     kommando = lesChar("\nKommando");
 
     while (kommando != 'Q')  {
+
+        cout << gDagene.size() << endl;
+
         switch (kommando)  {
           case 'N': nyAktivitet();      break;
           case 'A': skrivDager(true);   break;
@@ -284,10 +287,10 @@ bool Dag::harDato(const int dag, const int maaned, const int aar) const {
         if(gDagene[i]->dagNr == dag){
             if(gDagene[i]->maanedNr == maaned){
                 if(gDagene[i]->aarNr == aar){
-                    return false;
-                }else return true;
-            }else return true;
-        }else return true;
+                    return true;
+                }else return false;
+            }else return false;
+        }else return false;
     }
 }
 
@@ -306,7 +309,6 @@ void Dag::nyAktivitet()  {
         Heldags* aktivitetH; aktivitetH = new Heldags;
         aktivitetH->lesData();
         heldagsAktiviteter.push_back(aktivitetH);
-        
     }else{
         Tidsbegrenset* aktivitetT; aktivitetT = new Tidsbegrenset;
         aktivitetT->lesData();
@@ -322,33 +324,29 @@ void Dag::nyAktivitet()  {
  */
 void Dag::skrivAktiviteter() const {
 
-    if(heldagsAktiviteter.size() > 0){
+    
         cout << "\n\nHeldags aktiviteter\n------------------\n\n";
-
         cout << "the size: " << heldagsAktiviteter.size() << endl;
-        for(int i = 0; i < heldagsAktiviteter.size(); i++){
-            cout << "Aktivitet nr. " << i+1 << endl;
-            heldagsAktiviteter[i]->skrivData();
-        }
-    }
 
-    if(!tidsbegrensedeAktiviteter.empty()){
-        cout << "Tidsbegrensede aktivitet\n--------------------\n\n";
-        cout << "the size: " << tidsbegrensedeAktiviteter.size() << endl;
+        for(int i = 0; i < heldagsAktiviteter.size(); i++){
+            if(gDagene[i] )
+            heldagsAktiviteter[]->skrivData();
+        }
+
+
+        cout << "\n\nTidsbegrensede aktivitet\n--------------------\n\n";
         for(int i = 0; i < tidsbegrensedeAktiviteter.size(); i++){
             cout<<"\nAktivitet nr. " << i+1 << endl;
             tidsbegrensedeAktiviteter[i]->skrivData();
         }
-    }
 }
 
 /**
  *  Skriver KUN ut egen -dato.
  */
 void Dag::skrivDato() const {
-    cout << "\n\nDagens dato: " << dagNr << "." << maanedNr << "." << aarNr
+    cout << "\n\n " << dagNr << "." << maanedNr << "." << aarNr
     << endl;
-
 }
 
 
@@ -369,7 +367,6 @@ bool dagOK(const int dag, const int maaned, const int aar)  {
     if(dag >= 1 && dag <= 31 ){
         if(maaned >= 1 << maaned <= 12){
             if(aar >= 1990 && aar <= 2030){
-                cout << "Dato er gyldig" << endl;
                 return true;
             }else return false;
         }else return false;
@@ -393,7 +390,6 @@ Dag* finnDag(const int dag, const int maaned, const int aar)  {
             return gDagene[i];
         else return nullptr;
     }
-    cout << "Ingen var like" << endl;
 }
 
 
@@ -416,10 +412,12 @@ void frigiAllokertMemory()  {
  */
 void nyAktivitet()  {
     int dag, mnd, aar;
+    Dag* temp;
 
-    //skrivDager(!gDagene.empty()); Vet ikke hvorfor
-
-    do{
+    for(int i = 0; i < gDagene.size(); i++){
+        cout << "Dato " << i+1 << ": ";
+        gDagene[i]->skrivDato();
+    }
         do{
             cout << "Skriv inn en ny dato:" << endl;
             cout << "Hvilket år: "; cin >> aar;
@@ -428,20 +426,25 @@ void nyAktivitet()  {
             cout << "\n\n";
         }while(!dagOK(dag, mnd, aar));
 
-    }while(!finnDag(dag, mnd, aar));
-
-    Dag* nyDag;
-    nyDag = new Dag(dag, mnd, aar);
-    gDagene.push_back(nyDag);
-    nyDag->nyAktivitet();
-
+    if(!finnDag(dag, mnd, aar)){
+        cout << "Ny dag" << endl;
+        Dag* nyDag;
+        nyDag = new Dag(dag, mnd, aar);
+        nyDag->nyAktivitet(); 
+        gDagene.push_back(nyDag);
+    }else{
+        temp = finnDag(dag, mnd, aar);
+        cout << "Dagen finnes allerede" << endl;
+        temp->nyAktivitet();
+        gDagene.push_back(temp);
+    }
 }
 
 
 /**
  *  Skriver ut ALLE dagene (MED eller UTEN deres aktiviteter).
  *
- *  @param   inkludertAktiviteter - Utskrift av ALLE aktivitetene ogsÃ¥, eller ei
+ *  @param   inkludertAktiviteter - Utskrifti av ALLE aktivitetene ogsÃ¥, eller ei
  *  @see     Dag::skrivDato()
  *  @see     Dag::skrivAktiviteter()
  */
@@ -464,8 +467,14 @@ void skrivDager(const bool inkludertAktiviteter)  {
  *  @see   Dag::skrivAktiviteter()
  */
 void skrivEnDag()  {
+    Dag *temp;
     int dag, mnd, aar;
     //skrivDager(!gDagene.empty());
+
+    for(int i = 0; i < gDagene.size(); i++){
+        cout << "Dato nr " << i+1 << ": ";
+        gDagene[i]->skrivDato();
+    }
 
     do{
         cout << "Hvilken dato vil du skrive ut" << endl;
@@ -474,9 +483,8 @@ void skrivEnDag()  {
             cout << "Hvilken dag: "; cin >> dag;
     }while(!dagOK(dag, mnd, aar));
 
-    //if(finnDag(dag, mnd, aar))
-        
-
+    if(temp = finnDag(dag, mnd, aar))
+        temp->skrivAktiviteter();
 }
 
 
