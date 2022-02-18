@@ -329,14 +329,14 @@ void Dag::skrivAktiviteter() const {
         cout << "the size: " << heldagsAktiviteter.size() << endl;
 
         for(int i = 0; i < heldagsAktiviteter.size(); i++){
-            if(gDagene[i] )
-            heldagsAktiviteter[]->skrivData();
+            cout << "\n\nHeldags aktivitet nr " << i+1 << endl;
+            heldagsAktiviteter[i]->skrivData();
         }
 
 
         cout << "\n\nTidsbegrensede aktivitet\n--------------------\n\n";
         for(int i = 0; i < tidsbegrensedeAktiviteter.size(); i++){
-            cout<<"\nAktivitet nr. " << i+1 << endl;
+            cout << "\n\nTidsbegrenset aktivitet nr " << i+1 << endl;
             tidsbegrensedeAktiviteter[i]->skrivData();
         }
 }
@@ -398,7 +398,10 @@ Dag* finnDag(const int dag, const int maaned, const int aar)  {
  */
 void frigiAllokertMemory()  {
 
-//  Lag innmaten
+    while(!gDagene.empty()){                //Dette er vell alt
+        delete gDagene[gDagene.size()-1];
+        gDagene.pop_back();
+    }
 }
 
 
@@ -436,7 +439,6 @@ void nyAktivitet()  {
         temp = finnDag(dag, mnd, aar);
         cout << "Dagen finnes allerede" << endl;
         temp->nyAktivitet();
-        gDagene.push_back(temp);
     }
 }
 
