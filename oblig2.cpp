@@ -272,7 +272,6 @@ Dag :: ~ Dag() {
     cout << "\nSletter vectorer i dag klassen";
 }
 
-
 /**
  *  Finner ut om selv er en gitt dato eller ei.
  *
@@ -324,7 +323,6 @@ void Dag::nyAktivitet()  {
  */
 void Dag::skrivAktiviteter() const {
 
-    
         cout << "\n\nHeldags aktiviteter\n------------------\n\n";
         cout << "the size: " << heldagsAktiviteter.size() << endl;
 
@@ -332,7 +330,6 @@ void Dag::skrivAktiviteter() const {
             cout << "\n\nHeldags aktivitet nr " << i+1 << endl;
             heldagsAktiviteter[i]->skrivData();
         }
-
 
         cout << "\n\nTidsbegrensede aktivitet\n--------------------\n\n";
         for(int i = 0; i < tidsbegrensedeAktiviteter.size(); i++){
@@ -345,8 +342,8 @@ void Dag::skrivAktiviteter() const {
  *  Skriver KUN ut egen -dato.
  */
 void Dag::skrivDato() const {
-    cout << "\n\n " << dagNr << "." << maanedNr << "." << aarNr
-    << endl;
+    cout << "\nAktiviteter for dato: " << dagNr << "." << maanedNr << "." 
+    << aarNr << endl;
 }
 
 
@@ -488,7 +485,6 @@ void skrivEnDag()  {
     if(temp = finnDag(dag, mnd, aar))
         temp->skrivAktiviteter();
 }
-
 
 /**
  *  Skriver programmets menyvalg/muligheter pÃ¥ skjermen.
