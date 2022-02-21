@@ -153,14 +153,13 @@ void Aktivitet::lesData() {
     }while(temp != 'J' && temp != 'F' && temp!= 'S' && temp != 'I');
     cout << "Hva slags aktivitet: "; getline(cin, navn);
 
-    switch(temp){
+    switch(temp){       //setter ennum to verdi
         case 'J' : kategori = Jobb ; break;
         case 'F' : kategori = Fritid; break;
         case 'S' : kategori = Skole; break;
         case 'I' : kategori = ikkeAngitt; break;
     }
 }
-
 
 /**
  *  Skriver ut ALLE klassens data
@@ -177,7 +176,6 @@ void Aktivitet::skrivData() const {
         case ikkeAngitt : cout << "Ingen spesiell aktivitet"; break;
     }
 }
-
 
 /**
  *  Leser inn ALLE klassens data, inkludert morklassens data.
@@ -209,10 +207,9 @@ void Tidsbegrenset::lesData() {
  */
 bool Tidsbegrenset::klokkeslettOK(const int time, const int min) const {
 
-    if((time > 0 && time < 23) && (min > 0 && min < 59))
+    if((time > 0 && time < 23) && (min > 0 && min < 59))    //Gyldig klokkelsett
         return false; else return true;
 }
-
 
 /**
  *  Skriver ut ALLE klassens data, inkludert morklassens data.
@@ -221,12 +218,12 @@ bool Tidsbegrenset::klokkeslettOK(const int time, const int min) const {
  */
 void Tidsbegrenset::skrivData() const {         //  Skriver mor-klassens data.
 
-    Aktivitet::skrivData();
+    Aktivitet::skrivData();     //Henter skrivdata fra Aktivitet klasse
 
-    cout << setfill('0');
+    cout << setfill('0');       //Fyller på med '0', tid 2 plasser
     cout << "\nAktitet start: " << setw(2) << startTime << " - " <<
     setw(2)<< startMin;
-    cout << "\nAktivitet slutt" << setw(2) << sluttTime << " - " <<
+    cout << "\nAktivitet slutt: " << setw(2) << sluttTime << " - " <<
     setw(2) << sluttMin << endl;
 }
 
@@ -238,7 +235,7 @@ void Tidsbegrenset::skrivData() const {         //  Skriver mor-klassens data.
  */
 void Heldags::lesData() {
 
-    Aktivitet::lesData();
+    Aktivitet::lesData();           //Bruker klassefunksjon
     cout << "Beskrivelse aktivitet heldags: "; getline(cin, beskrivelse);
 }
 
@@ -250,7 +247,7 @@ void Heldags::lesData() {
  */
 void Heldags::skrivData() const {
 
-    Aktivitet::skrivData();
+    Aktivitet::skrivData();         //Klassefunksjon
     cout << "\nAktivitet beskrivelse: " << beskrivelse;
 }
 
@@ -273,11 +270,12 @@ Dag :: ~ Dag() {
     cout << "\nSletter alt i aktivitets klassene.";
 */
     
-    //Eventuelt
-    for(int i = 0; i < heldagsAktiviteter.size(); i++)
-        delete heldagsAktiviteter[i];
+    //Litt usikker på hvorfor funksjonen over ikke fungerer
+    //Får en segmentation double dump (tcache)
+    for(int i = 0; i < heldagsAktiviteter.size(); i++)  //Går gjennom alle
+        delete heldagsAktiviteter[i];                   //Sletter
 
-    heldagsAktiviteter.clear();
+    heldagsAktiviteter.clear();                         //Fjerner hele
 
     for(int i = 0; i < tidsbegrensedeAktiviteter.size(); i++)
         delete tidsbegrensedeAktiviteter[i];
@@ -285,7 +283,6 @@ Dag :: ~ Dag() {
     tidsbegrensedeAktiviteter.clear();
 
     cout << "Slettet alle vector klasser" << endl;
-    
 }
 
 /**
@@ -296,17 +293,17 @@ Dag :: ~ Dag() {
  *  @param   aar     -  Ã…ret som skal sjekkes om er eget Ã¥r
  *  @return  Om selv er en gitt dato (ut fra parametrene) eller ei
  */
+                //Litt uryddig?
 bool Dag::harDato(const int dag, const int maaned, const int aar) const {
     
     for(int i = 0; i < gDagene.size(); i++){
         if(gDagene[i]->dagNr == dag){
             if(gDagene[i]->maanedNr == maaned){
-                if(gDagene[i]->aarNr == aar){
-                    return true;
-                }else return false;
-            }else return false;
-        }else return false;
+                if(gDagene[i]->aarNr == aar) return true;
+            }
+        }
     }
+    return false;
 }
 
 /**
@@ -318,16 +315,17 @@ bool Dag::harDato(const int dag, const int maaned, const int aar) const {
 void Dag::nyAktivitet()  {
     char temp;
 
+    //Bestemmer type aktivitet
     temp = lesChar("Er aktiviteten (Heldags - H) (tidsbegrenset - T)");
 
-    if (temp == 'H'){
-        Heldags* aktivitetH; aktivitetH = new Heldags;
-        aktivitetH->lesData();
-        heldagsAktiviteter.push_back(aktivitetH);
+    if (temp == 'H'){       //Hva slags aktiviet
+        Heldags* aktivitetH; aktivitetH = new Heldags;  
+        aktivitetH->lesData();                              //Leser data
+        heldagsAktiviteter.push_back(aktivitetH);           //Legger bakerst
     }else{
         Tidsbegrenset* aktivitetT; aktivitetT = new Tidsbegrenset;
-        aktivitetT->lesData();
-        tidsbegrensedeAktiviteter.push_back(aktivitetT);
+        aktivitetT->lesData();                              //Leser data
+        tidsbegrensedeAktiviteter.push_back(aktivitetT);    //Legger bakerst
     }
 }
 
@@ -339,19 +337,21 @@ void Dag::nyAktivitet()  {
  */
 void Dag::skrivAktiviteter() const {
 
-        cout << "\n\nHeldags aktiviteter\n------------------\n\n";
-        cout << "the size: " << heldagsAktiviteter.size() << endl;
-
+    if(!heldagsAktiviteter.empty()){            //Finnes noe i vector
+        cout << "Heldagsaktiviteter\n--------------------" << endl;
         for(int i = 0; i < heldagsAktiviteter.size(); i++){
-            cout << "\n\nHeldags aktivitet nr " << i+1 << endl;
-            heldagsAktiviteter[i]->skrivData();
+            cout << "\n\n\tNr. " << i+1 << endl;
+            heldagsAktiviteter[i]->skrivData(); //Skriver data
         }
+    }
 
+    if(!tidsbegrensedeAktiviteter.empty()){
         cout << "\n\nTidsbegrensede aktivitet\n--------------------\n\n";
         for(int i = 0; i < tidsbegrensedeAktiviteter.size(); i++){
-            cout << "\n\nTidsbegrenset aktivitet nr " << i+1 << endl;
-            tidsbegrensedeAktiviteter[i]->skrivData();
+            cout << "\tNr. " << i+1 << endl;
+            tidsbegrensedeAktiviteter[i]->skrivData();  //Skriver data
         }
+    }
 }
 
 /**
@@ -379,13 +379,11 @@ bool dagOK(const int dag, const int maaned, const int aar)  {
 
     if(dag >= 1 && dag <= 31 ){
         if(maaned >= 1 << maaned <= 12){
-            if(aar >= 1990 && aar <= 2030){
-                return true;
-            }else return false;
-        }else return false;
-    }else return false;
+            if(aar >= 1990 && aar <= 2030) return true; //Hvis er gyldig
+        }
+    }
+    return false;
 }
-
 
 /**
  *  Returnerer om mulig en peker til en 'Dag' med en gitt dato.
@@ -400,7 +398,7 @@ Dag* finnDag(const int dag, const int maaned, const int aar)  {
 
     for(int i = 0; i < gDagene.size(); i++){
         if(gDagene[i]->harDato(dag, maaned, aar))
-            return gDagene[i];
+            return gDagene[i];  //Hvis finnes, returner peker.
         else return nullptr;
     }
 }
@@ -410,11 +408,17 @@ Dag* finnDag(const int dag, const int maaned, const int aar)  {
  *  Frigir/sletter ALLE dagene og ALLE pekerne i 'gDagene'.
  */
 void frigiAllokertMemory()  {
-
-    while(!gDagene.empty()){                //Dette er vell alt
-        delete gDagene[gDagene.size()-1];
-        gDagene.pop_back();
+    /*
+    while(!gDagene.empty()){                //Så lengde en dag fines
+        delete gDagene[gDagene.size()-1];   //sletter bestemt dag
+        gDagene.pop_back();                 //fjerner bakerste dag
     }
+    */
+
+   //Bruker denne i stedet
+    for(int i = 0; i < gDagene.size(); i++) //Gjennom alle dagene
+        delete gDagene[i];                  //Slettter
+    gDagene.clear();                        //Fjerner alle ementer fra vector
 }
 
 
@@ -428,11 +432,11 @@ void frigiAllokertMemory()  {
  */
 void nyAktivitet()  {
     int dag, mnd, aar;
-    Dag* temp;
+    Dag* temp;                                  //Midlertidig peker
 
     for(int i = 0; i < gDagene.size(); i++){
         cout << "Dato " << i+1 << ": ";
-        gDagene[i]->skrivDato();
+        gDagene[i]->skrivDato();                //Skirver ut alle datoer
     }
         do{
             cout << "Skriv inn en ny dato:" << endl;
@@ -440,21 +444,20 @@ void nyAktivitet()  {
             cout << "Hvilken mnd: "; cin >> mnd;
             cout << "Hvilken dag: "; cin >> dag;
             cout << "\n\n";
-        }while(!dagOK(dag, mnd, aar));
+        }while(!dagOK(dag, mnd, aar));          //Gyldig dato?
 
-    if(!finnDag(dag, mnd, aar)){
+    if(!finnDag(dag, mnd, aar)){                //Hvis ikke funnet lage ny
         cout << "Ny dag" << endl;
         Dag* nyDag;
         nyDag = new Dag(dag, mnd, aar);
         nyDag->nyAktivitet(); 
         gDagene.push_back(nyDag);
-    }else{
+    }else{                                      //Legger til eksiterende dag
         temp = finnDag(dag, mnd, aar);
         cout << "Dagen finnes allerede" << endl;
-        temp->nyAktivitet();
+        temp->nyAktivitet();    //Legger ny aktivitet til eksiterende dag
     }
 }
-
 
 /**
  *  Skriver ut ALLE dagene (MED eller UTEN deres aktiviteter).
@@ -465,8 +468,8 @@ void nyAktivitet()  {
  */
 void skrivDager(const bool inkludertAktiviteter)  {
     if(!gDagene.empty()){
-        for(int i = 0; i < gDagene.size(); i++){
-            gDagene[i]->skrivDato();
+        for(int i = 0; i < gDagene.size(); i++){    //Skriver ut alle
+            gDagene[i]->skrivDato();                //
             if(inkludertAktiviteter) gDagene[i]->skrivAktiviteter();
         }
     }else
@@ -499,7 +502,7 @@ void skrivEnDag()  {
     }while(!dagOK(dag, mnd, aar));
 
     if(temp = finnDag(dag, mnd, aar))
-        temp->skrivAktiviteter();
+        temp->skrivAktiviteter();   //Skrier ut finner Aktivitet
 }
 
 /**
