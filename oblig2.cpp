@@ -260,6 +260,7 @@ void Heldags::skrivData() const {
  */
 Dag :: ~ Dag() {
 
+/*
     while(!tidsbegrensedeAktiviteter.empty()){
         delete tidsbegrensedeAktiviteter[tidsbegrensedeAktiviteter.size()-1];
         tidsbegrensedeAktiviteter.pop_back();
@@ -270,6 +271,21 @@ Dag :: ~ Dag() {
         tidsbegrensedeAktiviteter.pop_back();
     }
     cout << "\nSletter alt i aktivitets klassene.";
+*/
+    
+    //Eventuelt
+    for(int i = 0; i < heldagsAktiviteter.size(); i++)
+        delete heldagsAktiviteter[i];
+
+    heldagsAktiviteter.clear();
+
+    for(int i = 0; i < tidsbegrensedeAktiviteter.size(); i++)
+        delete tidsbegrensedeAktiviteter[i];
+
+    tidsbegrensedeAktiviteter.clear();
+
+    cout << "Slettet alle vector klasser" << endl;
+    
 }
 
 /**
