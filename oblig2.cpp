@@ -269,7 +269,7 @@ Dag :: ~ Dag() {
         delete heldagsAktiviteter[heldagsAktiviteter.size()-1];
         tidsbegrensedeAktiviteter.pop_back();
     }
-    cout << "\nSletter vectorer i dag klassen";
+    cout << "\nSletter alt i aktivitets klassene.";
 }
 
 /**
