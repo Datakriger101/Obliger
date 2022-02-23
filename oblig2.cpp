@@ -194,15 +194,16 @@ void Tidsbegrenset::lesData() {
     }while(klokkeslettOK(startTime, startMin));
         temp1 = startTime; temp2 = startMin;
     
-    do{     //Sjekker om sluttTid faktisk er etter starten.
+    do{     //Sjekker om sluttTid faktisk er etter starten.Kan gjøres lettere?
         do{
             cout << "\nTime-Slutt: "; cin >> sluttTime;
             cout << "\nMinutt-Slutt: "; cin >> sluttMin;
         }while(klokkeslettOK(sluttTime, sluttMin));
 
-    if(startTime <= sluttTime){
-        if(startTime > sluttTime && startMin > sluttMin) igjen = true;
-    }else igjen = false;
+    if(startTime == sluttTime ){
+        if(startMin > sluttMin) igjen = true;
+    }else if (startTime > sluttTime)igjen = true;
+    else igjen = false;
 
     }while(igjen);
 }
