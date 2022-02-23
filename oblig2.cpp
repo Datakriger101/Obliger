@@ -184,6 +184,7 @@ void Aktivitet::skrivData() const {
  *  @see   klokkeslettOK(...)
  */
 void Tidsbegrenset::lesData() {
+    int temp1, temp2; bool igjen;
 
     Aktivitet::lesData();
 
@@ -191,11 +192,19 @@ void Tidsbegrenset::lesData() {
         cout << "\nTime-start: "; cin >> startTime;
         cout << "\nMinutt-start: "; cin >> startMin;
     }while(klokkeslettOK(startTime, startMin));
+        temp1 = startTime; temp2 = startMin;
     
-    do{
-        cout << "\nTime-Slutt: "; cin >> sluttTime;
-        cout << "\nMinutt-Slutt: "; cin >> sluttMin;
-    }while(klokkeslettOK(sluttTime, sluttMin));
+    do{     //Sjekker om sluttTid faktisk er etter starten.
+        do{
+            cout << "\nTime-Slutt: "; cin >> sluttTime;
+            cout << "\nMinutt-Slutt: "; cin >> sluttMin;
+        }while(klokkeslettOK(sluttTime, sluttMin));
+
+    if(startTime <= sluttTime){
+        if(startTime > sluttTime && startMin > sluttMin) igjen = true;
+    }else igjen = false;
+
+    }while(igjen);
 }
 
 /**
