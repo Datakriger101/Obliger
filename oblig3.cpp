@@ -124,24 +124,55 @@ class Floteis : public Iskrem{
 class Isbil{
 	private: 
 		string sted;
-		list <Iskrem*> iskrem;				//Hver isbil har sine engne is
+		list <Iskrem*> iskremList;				//Hver isbil har sine engne is
 
 	public:	
 		Isbil();							//Leser innhold fra fil
 		~Isbil();							//Sletter iskrem fra liste
-
+ 
 		virtual void skrivData()			//Sted samt antall is listet
 		{	
-			cout << "Isbilen er finnes på " << sted << endl;
-			cout << "\tDen inneholder isene:\n";
-			for( const auto val : iskrem)
-				cout << "HELLO\n"; //MORE skal skrive ut listen med is
+			cout << "Isbilen finnes " << sted << endl;
+			cout << "\tDen bilen inneholder :" << iskremList.size();
 		}
 
-		virtual void nyIskrem();			//sorbet eller Floteis
-		virtual void skrivDataIsene();		//skrivData() + listen med isene
+		virtual void nyIskrem(){			//sorbet eller Floteis
+		int svar;
+			
+		//do{
+svar = lesInt("Skal det være (1)Sorbet is og (2)Fløteis eller (0) nada", 0, 2);
+		//}while(svar != 0 && svar != 1 && svar != 2);
+
+		if(svar != 0)
+		{
+			//cout << "Svaret var ikke null :O" << endl;
+			if(svar == 1)
+			{ 
+				Sorbet *isSorbet; isSorbet = new Sorbet;
+				isSorbet->lesData();
+				iskremList.push_back(isSorbet);
+			}else
+			{
+				Floteis *isFloteis; isFloteis = new Floteis;
+				isFloteis->lesData();
+				iskremList.push_back(isFloteis);
+			}
+		}else
+			cout << "\nDen er grei, ingen is opprettet\n"; 
+		}
+
+		virtual void skrivDataIsene(){		//skrivData() + listen med isene
+			cout << "\nSkriver ut data for alle isene som finnes i isbilen\n";
+			
+			skrivData();	//Skriver ut hva sted og ant is	
+		
+			cout << "\n\nBilen inneholder disse dataene\n";
+			for(auto it = iskremList.begin(); it != iskremList.end(); it++)
+				cout << "\t" << *it << endl;	//Hva iterator peker på	
+		}
+			
 		virtual void skrivIsbilDataTilFil();//Skriv isbil med data til fil
-		virtual string loksjon() const { return sted; };
+		virtual string loksjon() const { return sted; }; //pure func??
 };
 
 vector <Isbil*> gIsbiler;
@@ -150,14 +181,16 @@ vector <Isbil*> gIsbiler;
  * Globale funksjoner
  */
 
-void skrivMeny();
-void skrivAlleIsbiler();
-void skrivBilOgEvtLeggInn(const bool LeggInn);
-void skrivTilFil();
-void lesFraFil();
-Isbil* finnIsbil();		//Skal sende med parameter
+void skrivMeny();											//DONE
+void skrivAlleIsbiler();									//DONE 
+void skrivBilOgEvtLeggInn(const bool LeggInn);				//DONE -tror jeg
+void skrivTilFil();											//
+void lesFraFil();											//lele
+Isbil* finnIsbil(const string navn);		//Skal sende med parameter, brukes av LANG funksjon
 
 int main(){
+
+	lesFraFil();
 
 	skrivMeny();
 	char kommando = lesChar("\ntHvilken kommando vil du kjøre");
@@ -165,12 +198,29 @@ int main(){
 		switch(kommando)
 		{	
 			case 'A' : skrivAlleIsbiler(); break;
-			case 'E' : cout << "E" << endl; break;
-			case 'L' : cout << "L" << endl; break;
+			case 'E' : skrivBilOgEvtLeggInn(false); break;
+			case 'L' : skrivBilOgEvtLeggInn(true); break;
 			default  : cout << "Ugyldig kommando!" << endl; break;	
 		}
 		kommando = lesChar("\nHvilken kommando vil du kjøre");
 	}
+
+	skrivTilFil();
+}
+
+void skrivBilOgEvtLeggInn(const bool LeggInn){
+	string navn; Isbil *temp;
+
+	skrivAlleIsbiler();		//Oversikt om hvem som finnes
+
+	getline(cin, navn);
+	temp = finnIsbil(navn); //Finner hvis allerde finnes
+	if(temp){ 
+		temp->skrivData();
+		if(LeggInn) temp->nyIskrem();
+	}else
+		cout << "\nUgyldig navn innskrevet\n";		
+	
 }
 
 void skrivAlleIsbiler(){
@@ -178,11 +228,10 @@ void skrivAlleIsbiler(){
 	if(!gIsbiler.empty()){
 		cout << "\tUtskrift av alle isbiler\n";
 		for(int i = 0; i < gIsbiler.size(); i++){
+			cout << "\nIsbil nr: " << i+1 << endl;
 			gIsbiler[i]->skrivData();
-			
 		}
 		
-	
 	}else cout << "\nFinnes ingen isbiler enda!\n";
 }
 
