@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <fstream>
 
 using namespace std;
 
@@ -18,7 +19,10 @@ class Iskrem{
 		int pris;
 	
 	public:
-		Iskrem();						//Leser fra fil - Iskrem
+		Iskrem(ifstream & inn){			//Leser iskrem fra fil
+			cin.ignore(); inn >> pris;
+			getline(inn, smak);
+		};					
 		
 		virtual void lesData(){			//Lese inn data	
 			cout << "\nHva slags smak er det: "; getline(cin, smak); 
@@ -31,7 +35,7 @@ class Iskrem{
 
 };
 
-enum Type { Sorbe, Granite, Slush };
+enum Type { Sorbe, Granite, Slush, Annet};
 
 /*
  * Subklasser - Sorbet og Floteis
@@ -40,9 +44,18 @@ enum Type { Sorbe, Granite, Slush };
 class Sorbet : public Iskrem{
 	private: 
 		enum Type sorbeType;			//Yes sir
-	
+			
 	public:
-		Sorbet();						//Leser fra fil - Sorbet
+
+		Sorbet(ifstream & inn) : Iskrem(inn){		//Leser fra fil - Sorbet
+			int temp; inn >> temp;
+			
+			switch(temp){
+				case '1' : sorbeType = Sorbe;
+				case '2' : sorbeType = Granite;
+				case '3' : sorbeType = Slush;
+			}
+		}
 
 		virtual void lesData(){			//Leser inn ny sorbet is
 		int svar;
@@ -69,6 +82,7 @@ class Sorbet : public Iskrem{
 				case Sorbe : cout << "\nIsen er av type Sorbet\n";
 				case Granite : cout << "\nIsen er av type Granite\n";
 				case Slush : cout << "\nDet er en slush hihi :)\n";
+				case Annet : cout << "\nFUck you u little shit\n";
 			}
 		}
 
@@ -95,7 +109,11 @@ class Floteis : public Iskrem{
 		bool vegan;						//Om fløteisen er vegansk
 
 	public:
-		Floteis();
+		Floteis(ifstream & inn) : Iskrem(inn){
+		bool temp;
+			if(temp) vegan = true;
+			else vegan = false;
+		}
 
 		virtual void lesData(){
 		char svar;
@@ -124,31 +142,34 @@ class Floteis : public Iskrem{
 class Isbil{
 	private: 
 		string sted;
-		list <Iskrem*> iskremList;				//Hver isbil har sine engne is
+		list <Iskrem*> iskremList;			//Hver isbil har sine engne is
 
 	public:	
-		Isbil();							//Leser innhold fra fil
+		Isbil(ifstream & inn){ getline(inn, sted);}  //Leser sted for isbil
+				
 		~Isbil();							//Sletter iskrem fra liste
  
 		virtual void skrivData()			//Sted samt antall is listet
 		{	
-			cout << "Isbilen finnes " << sted << endl;
+			cout << "Isbilen finnes " << lokasjon() << endl;
 			cout << "\tDen bilen inneholder :" << iskremList.size();
 		}
 
-		virtual void nyIskrem(){			//sorbet eller Floteis
+/*
+		virtual void nyIskrem(){			//sorbet eller Floteis //MORE
 		int svar;
 			
 		//do{
 svar = lesInt("Skal det være (1)Sorbet is og (2)Fløteis eller (0) nada", 0, 2);
 		//}while(svar != 0 && svar != 1 && svar != 2);
+		//Denne blir nok endret senere, char temp = lesChar(), do{}while();
 
 		if(svar != 0)
 		{
 			//cout << "Svaret var ikke null :O" << endl;
 			if(svar == 1)
 			{ 
-				Sorbet *isSorbet; isSorbet = new Sorbet;
+				Sorbet *isSorbet; isSorbet = new Sorbet();
 				isSorbet->lesData();
 				iskremList.push_back(isSorbet);
 			}else
@@ -160,6 +181,7 @@ svar = lesInt("Skal det være (1)Sorbet is og (2)Fløteis eller (0) nada", 0, 2)
 		}else
 			cout << "\nDen er grei, ingen is opprettet\n"; 
 		}
+*/
 
 		virtual void skrivDataIsene(){		//skrivData() + listen med isene
 			cout << "\nSkriver ut data for alle isene som finnes i isbilen\n";
@@ -171,8 +193,11 @@ svar = lesInt("Skal det være (1)Sorbet is og (2)Fløteis eller (0) nada", 0, 2)
 				cout << "\t" << *it << endl;	//Hva iterator peker på	
 		}
 			
-		virtual void skrivIsbilDataTilFil();//Skriv isbil med data til fil
-		virtual string loksjon() const { return sted; }; //pure func??
+		virtual void skrivIsbilDataTilFil();//Skriv isbil med data til fili
+		//Når data skal skrives til fil skal antall iser være med for
+		//å kunne vite hvor mange som skal leses inn i listen
+
+		virtual string lokasjon() const { return sted; }; //pure func??
 };
 
 vector <Isbil*> gIsbiler;
@@ -197,10 +222,10 @@ int main(){
 	while(kommando != 'Q'){
 		switch(kommando)
 		{	
-			case 'A' : skrivAlleIsbiler(); break;
-			case 'E' : skrivBilOgEvtLeggInn(false); break;
-			case 'L' : skrivBilOgEvtLeggInn(true); break;
-			default  : cout << "Ugyldig kommando!" << endl; break;	
+			case 'A' : skrivAlleIsbiler();					break;
+			case 'E' : skrivBilOgEvtLeggInn(false);			break;
+			case 'L' : skrivBilOgEvtLeggInn(true);			break;
+			default  : cout << "Ugyldig kommando!" << endl;	break;	
 		}
 		kommando = lesChar("\nHvilken kommando vil du kjøre");
 	}
@@ -208,19 +233,55 @@ int main(){
 	skrivTilFil();
 }
 
+void skrivTilFil(){
+	cout << "Hello All The Nice braincells that want to make this program amazing! :O\n\n";
+}
+
+void lesFraFil(){			//Kjøres i starten av programmet
+	int ant; string sted; char type; Isbil* bil; list <Iskrem*> tempList;
+
+	ifstream innfil("ISBIL.dta");
+
+	// trenger å vite hva slags is som skal leses in;
+	if(innfil){
+		cout << "\nKlarer å lese av filen -ISBIL.dta-\n";
+		
+		innfil >> ant; 
+			
+		while(!innfil.eof()){
+			innfil.ignore(); 
+			gIsbiler.push_back(new Isbil(innfil));
+
+			//Finne måte å legge det under inn i objektet i isbil vector
+
+			for(int i = 0; i < ant; i++){
+
+			innfil >> type;
+				if(type == 'S')	tempList.push_back(new Sorbet(innfil));	
+				else tempList.push_back(new Floteis(innfil));
+			}
+		}
+	}
+}
 void skrivBilOgEvtLeggInn(const bool LeggInn){
 	string navn; Isbil *temp;
 
-	skrivAlleIsbiler();		//Oversikt om hvem som finnes
+	skrivAlleIsbiler();		//Oversikt om hvem som finne
 
 	getline(cin, navn);
 	temp = finnIsbil(navn); //Finner hvis allerde finnes
 	if(temp){ 
 		temp->skrivData();
-		if(LeggInn) temp->nyIskrem();
+		//if(LeggInn) temp->nyIskrem(); //MORE
 	}else
 		cout << "\nUgyldig navn innskrevet\n";		
 	
+}
+
+Isbil* finnIsbil(const string navn){
+	cout << "Isbil funnet Mr. Refsgaard, ZYZZZZZ\n";
+
+	Isbil* hei; return hei;
 }
 
 void skrivAlleIsbiler(){

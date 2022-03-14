@@ -78,7 +78,7 @@ class Heldags : public Aktivitet  {
 
 
 /**
- *  Selvlaget container-klasse 'Dag' (med dato og ulike aktiviteter).
+ *  Selvlaget container-klasse 'Dag' (med dato og ulike aktivite
  */
 class Dag  {
   private:
