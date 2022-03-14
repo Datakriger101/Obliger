@@ -9,6 +9,8 @@
 
 using namespace std;
 
+
+
 /*
  *	Hovedklassen - Iskrem
  */
@@ -20,18 +22,18 @@ class Iskrem{
 	
 	public:
 		Iskrem(ifstream & inn){			//Leser iskrem fra fil
-			cin.ignore(); inn >> pris;
+			inn >> pris;
 			getline(inn, smak);
-		};					
+		};		
 		
 		virtual void lesData(){			//Lese inn data	
 			cout << "\nHva slags smak er det: "; getline(cin, smak); 
 			cout << "\nHvor mye koster den: "; cin >> pris; }
 
-		virtual void skrivData(){		//Skriver ut data
+		virtual void skrivData() const{		//Skriver ut data
 			cout << "\nIsen er av smaken: " << smak << " og koster: " << pris;
 		}
-		virtual void skrivTilFil();		//Skriver Iskrem data til fil
+		virtual void skrivTilFil(){};		//Skriver Iskrem data til fil
 
 };
 
@@ -47,8 +49,8 @@ class Sorbet : public Iskrem{
 			
 	public:
 
-		Sorbet(ifstream & inn) : Iskrem(inn){		//Leser fra fil - Sorbet
-			int temp; inn >> temp;
+		Sorbet(ifstream & inn) : Iskrem(inn){					//Constructor
+			int temp; inn >> temp; inn.ignore();
 			
 			switch(temp){
 				case '1' : sorbeType = Sorbe;
@@ -56,6 +58,8 @@ class Sorbet : public Iskrem{
 				case '3' : sorbeType = Slush;
 			}
 		}
+
+		~Sorbet(){};
 
 		virtual void lesData(){			//Leser inn ny sorbet is
 		int svar;
@@ -75,7 +79,7 @@ class Sorbet : public Iskrem{
 			}
 		}
 
-		virtual void SkrivData(){
+		virtual void SkrivData() const {
 			Iskrem::skrivData();		//Skriver baseklasse data;
 
 			switch(sorbeType){
@@ -101,7 +105,7 @@ class Sorbet : public Iskrem{
 		}
 		*/
 
-		virtual void skrivTilFil();
+		virtual void skrivTilFil(){};
 };
 
 class Floteis : public Iskrem{
@@ -124,14 +128,14 @@ class Floteis : public Iskrem{
 			else vegan = false;
 		}
 
-		virtual void skrivData(){
+		virtual void skrivData() const {
 			Iskrem::skrivData();
 			if(vegan) cout << "\nFløteisen er vegansk\n";
 			else cout << "Fløteisen er IKKE vegansk\n";
 		}
 
 	
-		virtual void skrivTilFil();
+		virtual void skrivTilFil(){};
 	
 };
 
@@ -145,20 +149,27 @@ class Isbil{
 		list <Iskrem*> iskremList;			//Hver isbil har sine engne is
 
 	public:	
-		Isbil(ifstream & inn){ getline(inn, sted);}  //Leser sted for isbil
-				
-		~Isbil();							//Sletter iskrem fra liste
- 
+		Isbil(ifstream & inn){				//Leser sted for isbil
+			char temp; int ant;
+			inn >> ant; inn.ignore();
+			getline(inn, sted);
+
+			inn >> temp;
+			switch (temp){
+				case 's' : iskremList.push_back(new Sorbet(inn));
+				case 'f' : iskremList.push_back(new Floteis(inn));
+			}
+		}
+
 		virtual void skrivData()			//Sted samt antall is listet
 		{	
 			cout << "Isbilen finnes " << lokasjon() << endl;
 			cout << "\tDen bilen inneholder :" << iskremList.size();
 		}
-
 /*
 		virtual void nyIskrem(){			//sorbet eller Floteis //MORE
 		int svar;
-			
+
 		//do{
 svar = lesInt("Skal det være (1)Sorbet is og (2)Fløteis eller (0) nada", 0, 2);
 		//}while(svar != 0 && svar != 1 && svar != 2);
@@ -193,11 +204,11 @@ svar = lesInt("Skal det være (1)Sorbet is og (2)Fløteis eller (0) nada", 0, 2)
 				cout << "\t" << *it << endl;	//Hva iterator peker på	
 		}
 			
-		virtual void skrivIsbilDataTilFil();//Skriv isbil med data til fili
+		virtual void skrivIsbilDataTilFil(){};//Skriv isbil med data til fili
 		//Når data skal skrives til fil skal antall iser være med for
 		//å kunne vite hvor mange som skal leses inn i listen
 
-		virtual string lokasjon() const { return sted; }; //pure func??
+		string lokasjon() const { return sted; }; //pure func??
 };
 
 vector <Isbil*> gIsbiler;
@@ -238,7 +249,7 @@ void skrivTilFil(){
 }
 
 void lesFraFil(){			//Kjøres i starten av programmet
-	int ant; string sted; char type; Isbil* bil; list <Iskrem*> tempList;
+	int antBiler; string sted; char type; Isbil* bil; list <Iskrem*> tempList;
 
 	ifstream innfil("ISBIL.dta");
 
@@ -246,20 +257,11 @@ void lesFraFil(){			//Kjøres i starten av programmet
 	if(innfil){
 		cout << "\nKlarer å lese av filen -ISBIL.dta-\n";
 		
-		innfil >> ant; 
-			
-		while(!innfil.eof()){
-			innfil.ignore(); 
-			gIsbiler.push_back(new Isbil(innfil));
+		innfil >> antBiler; 
+		innfil.ignore(); 
 
-			//Finne måte å legge det under inn i objektet i isbil vector
-
-			for(int i = 0; i < ant; i++){
-
-			innfil >> type;
-				if(type == 'S')	tempList.push_back(new Sorbet(innfil));	
-				else tempList.push_back(new Floteis(innfil));
-			}
+			for(int i = 0; i < antBiler; i++){
+				gIsbiler.push_back(new Isbil(innfil));
 		}
 	}
 }

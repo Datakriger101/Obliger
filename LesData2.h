@@ -1,5 +1,5 @@
 /**
- *   Enkel verktøykasse for å lese:  tegn og tall.
+ *   Enkel verktï¿½ykasse for ï¿½ lese:  tegn og tall.
  *
  *   @file     LesData2.H
  *   @author   Frode Haug, NTNU
@@ -25,7 +25,7 @@ int   lesInt(const char* t, const int min, const int max);
 /**
  *  Leser og returnerer ett (upcaset) tegn.
  *
- *  @param   t  - Ledetekst til brukeren når ber om ett tegn
+ *  @param   t  - Ledetekst til brukeren nï¿½r ber om ett tegn
  *
  *  @return  Ett (upcaset) tegn.
  */
@@ -40,10 +40,10 @@ int   lesInt(const char* t, const int min, const int max);
 /**
  *  Leser og returnerer et flyttall mellom to gitte grenser.
  *
- *  @param   t    - Ledetekst til brukeren når ber om input/et tall
+ *  @param   t    - Ledetekst til brukeren nï¿½r ber om input/et tall
  *  @param   min  - Minimum for innlest og godtatt tallverdi
  *  @param   max  - Maksimum for innlest og godtatt tallverdi
- *
+ *Isbil::Isbil
  *  @return  Godtatt verdi i intervallet 'min' - 'max'
  */
 float lesFloat (const char* t, const float min, const float max)  {
@@ -68,7 +68,7 @@ float lesFloat (const char* t, const float min, const float max)  {
 /**
  *  Leser og returnerer et heltall mellom to gitte grenser.
  *
- *  @param   t    - Ledetekst til brukeren når ber om input/et tall
+ *  @param   t    - Ledetekst til brukeren nï¿½r ber om input/et tall
  *  @param   min  - Minimum for innlest og godtatt tallverdi
  *  @param   max  - Maksimum for innlest og godtatt tallverdi
  *
